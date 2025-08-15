@@ -1,12 +1,12 @@
+import * as dotenv from 'dotenv';
+import * as dotenvExpand from 'dotenv-expand';
 import { DataSource } from 'typeorm';
+
+dotenvExpand.expand(dotenv.config());
 
 export default new DataSource({
   type: 'postgres',
-  username: 'postgres',
-  password: 'Avond778@',
-  host: 'localhost',
-  port: 5432,
-  database: 'postgres',
+  url: process.env.DATABASE_URL,
   entities: ['dist/domain/**/*.entity.js'],
   migrations: ['dist/database/migration/*.js'],
 });
