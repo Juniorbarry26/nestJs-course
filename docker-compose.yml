@@ -5,11 +5,11 @@ services:
     image: postgres:15
     restart: always
     ports:
-      - '5432:5432'
+      - "${DATASOURCE_PORT}:5432"
     environment:
       POSTGRES_DB: conrode
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: Avond778@
+      POSTGRES_PASSWORD: ${DATASOURCE_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data
 

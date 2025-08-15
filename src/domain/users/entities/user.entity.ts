@@ -1,5 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { RegistryDate } from '../../../common/embedded/registry-date.embedded';
+import { RegistryDate } from '../../../common/dtos/embedded/registry-date.embedded';
 
 @Entity()
 export class User {
