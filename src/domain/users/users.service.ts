@@ -1,6 +1,12 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { genSalt, hash } from 'bcrypt';
 import { Repository } from 'typeorm';
+import { HashingService } from '../../auth/hashing/hashing.service';
 import { PaginationDto } from '../../common/dtos/pagination.dto';
 import { DEFAULT_PAGE_SIZE } from '../../common/util/common.constants';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -12,9 +18,16 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    private readonly HashingService: HashingService,
   ) {}
-  create(createUserDto: CreateUserDto) {
-    const user = this.userRepository.create(createUserDto);
+  async create(createUserDto: CreateUserDto) {
+    const { password } = createUserDto;
+    const hashPassword = await this.HashingService.hash(password);
+
+    const user = this.userRepository.create({
+      ...createUserDto,
+      password: hashPassword,
+    });
     return this.userRepository.save(user);
   }
 
@@ -41,7 +54,13 @@ export class UsersService {
   }
 
   async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
-    const user = await this.userRepository.findOneBy({ id });
+    const { password } = updateUserDto;
+    const hashPassword = password && (await this.HashingService.hash(password));
+
+    const user = await this.userRepository.preload({
+      ...updateUserDto,
+      password: hashPassword,
+    });
     if (!user) throw new NotFoundException('User not found');
 
     Object.assign(user, updateUserDto);
@@ -59,7 +78,7 @@ export class UsersService {
   }
 
   async recovery(id: number) {
-     const user = await this.userRepository.findOne({
+    const user = await this.userRepository.findOne({
       where: { id },
       relations: {
         orders: {
