@@ -1,4 +1,4 @@
-import { IsCardinal } from '../decorator/is-cardinal.decorator';
+import { IsCardinal } from '../decorator/validators/is-cardinal.decorator';
 /**
  *
  */
