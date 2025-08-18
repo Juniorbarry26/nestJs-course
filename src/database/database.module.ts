@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigType } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { SeedingModule } from './seeding/seeding.module';
 import databaseConfig from './config/database.config';
 
 @Module({
@@ -16,6 +17,7 @@ import databaseConfig from './config/database.config';
         autoLoadEntities: true,
       }),
     }),
+    SeedingModule,
   ],
 })
 export class DatabaseModule {}
