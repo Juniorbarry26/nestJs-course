@@ -4,7 +4,6 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { genSalt, hash } from 'bcrypt';
 import { Repository } from 'typeorm';
 import { HashingService } from '../../auth/hashing/hashing.service';
 import { PaginationDto } from '../../common/dtos/pagination.dto';
