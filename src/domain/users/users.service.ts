@@ -1,5 +1,10 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { genSalt, hash } from 'bcrypt';
 import { Repository } from 'typeorm';
 import { PaginationDto } from '../../common/dtos/pagination.dto';
 import { DEFAULT_PAGE_SIZE } from '../../common/util/common.constants';
@@ -13,8 +18,14 @@ export class UsersService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
   ) {}
-  create(createUserDto: CreateUserDto) {
-    const user = this.userRepository.create(createUserDto);
+  async create(createUserDto: CreateUserDto) {
+    const { password } = createUserDto;
+    const hashPassword = await this.hashPassword(password);
+
+    const user = this.userRepository.create({
+      ...createUserDto,
+      password: hashPassword,
+    });
     return this.userRepository.save(user);
   }
 
@@ -41,7 +52,13 @@ export class UsersService {
   }
 
   async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
-    const user = await this.userRepository.findOneBy({ id });
+    const { password } = updateUserDto;
+    const hashPassword = password && (await this.hashPassword(password));
+
+    const user = await this.userRepository.preload({
+      ...updateUserDto,
+      password: hashPassword,
+    });
     if (!user) throw new NotFoundException('User not found');
 
     Object.assign(user, updateUserDto);
@@ -59,7 +76,7 @@ export class UsersService {
   }
 
   async recovery(id: number) {
-     const user = await this.userRepository.findOne({
+    const user = await this.userRepository.findOne({
       where: { id },
       relations: {
         orders: {
@@ -79,5 +96,10 @@ export class UsersService {
     }
 
     return this.userRepository.recover(user);
+  }
+
+  private async hashPassword(password: string) {
+    const salt = await genSalt();
+    return hash(password, salt);
   }
 }
