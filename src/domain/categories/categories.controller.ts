@@ -1,9 +1,18 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
+import { IdDto } from '../../common/dtos/id.dto';
+import { PaginationDto } from '../../common/dtos/pagination.dto';
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
-import { IdDto } from '../../common/dtos/id.dto';
-import { PaginationDto } from '../../common/dtos/pagination.dto';
 
 @Controller('categories')
 export class CategoriesController {

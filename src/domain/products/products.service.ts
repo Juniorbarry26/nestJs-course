@@ -4,14 +4,16 @@ import { Repository } from 'typeorm';
 import { PaginationDto } from '../../common/dtos/pagination.dto';
 import { DEFAULT_PAGE_SIZE } from '../../common/util/common.constants';
 import { CreateProductDto } from './dto/create-product.dto';
+import { UpdateProductDto } from './dto/update-product.dto';
 import { Product } from './entities/product.entity';
 
 @Injectable()
-export class productsService {
+export class ProductsService {
   constructor(
     @InjectRepository(Product)
     private readonly productRepository: Repository<Product>,
   ) {}
+
   create(createProductDto: CreateProductDto) {
     const product = this.productRepository.create(createProductDto);
     return this.productRepository.save(product);
@@ -22,6 +24,7 @@ export class productsService {
     return this.productRepository.find({
       skip: offset,
       take: limit ?? DEFAULT_PAGE_SIZE.PRODUCTS,
+      relations: { categories: true },
     });
   }
 
@@ -30,16 +33,16 @@ export class productsService {
       where: { id },
       relations: { categories: true },
     });
-    if (!product) throw new NotFoundException('product not found.');
+    if (!product) throw new NotFoundException('Product not found.');
     return product;
   }
 
-  async update(id: number, updateproductDto: CreateProductDto) {
+  async update(id: number, updateProductDto: UpdateProductDto) {
     const product = await this.productRepository.preload({
       id,
-      ...updateproductDto,
+      ...updateProductDto,
     });
-    if (!product) throw new NotFoundException('product not found');
+    if (!product) throw new NotFoundException('Product not found');
     return this.productRepository.save(product);
   }
 

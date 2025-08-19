@@ -8,15 +8,18 @@ import { Repository } from 'typeorm';
 import { PaginationDto } from '../../common/dtos/pagination.dto';
 import { DEFAULT_PAGE_SIZE } from '../../common/util/common.constants';
 import { CreateCategoryDto } from './dto/create-category.dto';
+import { UpdateCategoryDto } from './dto/update-category.dto';
 import { Category } from './entities/category.entity';
+
 @Injectable()
-export class categoriesService {
+export class CategoriesService {
   constructor(
     @InjectRepository(Category)
     private readonly categoryRepository: Repository<Category>,
   ) {}
-  create(createcategoryDto: CreateCategoryDto) {
-    const category = this.categoryRepository.create(createcategoryDto);
+
+  create(createCategoryDto: CreateCategoryDto) {
+    const category = this.categoryRepository.create(createCategoryDto);
     return this.categoryRepository.save(category);
   }
 
@@ -33,23 +36,23 @@ export class categoriesService {
       where: { id },
       relations: { products: true },
     });
-    if (!category) throw new NotFoundException('category not found.');
+    if (!category) throw new NotFoundException('Category not found.');
     return category;
   }
 
-  async update(id: number, updatecategoryDto: CreateCategoryDto) {
+  async update(id: number, updateCategoryDto: UpdateCategoryDto) {
     const category = await this.categoryRepository.preload({
       id,
-      ...updatecategoryDto,
+      ...updateCategoryDto,
     });
-    if (!category) throw new NotFoundException('category not found');
+    if (!category) throw new NotFoundException('Category not found.');
     return this.categoryRepository.save(category);
   }
 
   async remove(id: number) {
     const category = await this.findOne(id);
     if (category.products.length) {
-      throw new ConflictException('Category has some related products');
+      throw new ConflictException('Category has some related products.');
     }
     return this.categoryRepository.remove(category);
   }
