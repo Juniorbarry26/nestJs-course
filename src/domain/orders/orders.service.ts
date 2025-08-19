@@ -10,7 +10,7 @@ import { OrderItem } from './entities/order-item.entity';
 import { Order } from './entities/order.entity';
 
 @Injectable()
-export class ordersService {
+export class OrdersService {
   constructor(
     @InjectRepository(Order)
     private readonly orderRepository: Repository<Order>,
@@ -44,10 +44,8 @@ export class ordersService {
     const order = await this.orderRepository.findOne({
       where: { id },
       relations: {
-        items: {
-          product: true,
-          payment: true,
-        },
+        items: { product: true },
+        payment: true,
       },
     });
     if (!order) throw new NotFoundException('order not found.');

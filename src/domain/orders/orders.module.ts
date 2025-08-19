@@ -4,11 +4,11 @@ import { Product } from '../products/entities/product.entity';
 import { OrderItem } from './entities/order-item.entity';
 import { Order } from './entities/order.entity';
 import { OrdersController } from './orders.controller';
-import { ordersService } from './orders.service';
+import { OrdersService } from './orders.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Order, OrderItem, Product])],
   controllers: [OrdersController],
-  providers: [ordersService],
+  providers: [OrdersService],
 })
 export class OrdersModule {}
