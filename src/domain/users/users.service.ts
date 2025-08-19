@@ -4,6 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { genSalt, hash } from 'bcrypt';
 import { Repository } from 'typeorm';
 import { HashingService } from '../../auth/hashing/hashing.service';
 import { PaginationDto } from '../../common/dtos/pagination.dto';
@@ -21,7 +22,7 @@ export class UsersService {
   ) {}
   async create(createUserDto: CreateUserDto) {
     const { password } = createUserDto;
-    const hashPassword = await this.HashingService.hash(password);
+    const hashPassword = await this.hashPassword(password);
 
     const user = this.userRepository.create({
       ...createUserDto,
@@ -54,7 +55,7 @@ export class UsersService {
 
   async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
     const { password } = updateUserDto;
-    const hashPassword = password && (await this.HashingService.hash(password));
+    const hashPassword = password && (await this.hashPassword(password));
 
     const user = await this.userRepository.preload({
       ...updateUserDto,
@@ -97,5 +98,10 @@ export class UsersService {
     }
 
     return this.userRepository.recover(user);
+  }
+
+  private async hashPassword(password: string) {
+    const salt = await genSalt();
+    return hash(password, salt);
   }
 }
