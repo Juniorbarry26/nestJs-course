@@ -1,11 +1,13 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '../domain/users/entities/user.entity';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
+import { LoginDto } from './dto/login.dto';
 import { BcryptService } from './hashing/bcrypt.service';
 import { HashingService } from './hashing/hashing.service';
+import { ValidationMiddleware } from './middleware/login-validation/login-validation.middleware';
 import { LocalStrategy } from './strategies/local.strategy';
 
 @Module({
@@ -21,4 +23,8 @@ import { LocalStrategy } from './strategies/local.strategy';
   ],
   exports: [HashingService],
 })
-export class AuthModule {}
+export class AuthModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(ValidationMiddleware(LoginDto)).forRoutes('auth/login');
+  }
+}
