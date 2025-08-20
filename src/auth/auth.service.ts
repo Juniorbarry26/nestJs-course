@@ -33,7 +33,10 @@ export class AuthService {
       throw new UnauthorizedException('Password is invalid');
     }
 
-    const requestUser: RequestUser = { id: user.id };
+    const requestUser: RequestUser = {
+      id: user.id,
+      user: undefined,
+    };
     return requestUser;
   }
 }
