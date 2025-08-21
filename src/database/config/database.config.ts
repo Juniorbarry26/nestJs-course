@@ -2,18 +2,22 @@ import { registerAs } from '@nestjs/config';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 
 export default registerAs('database', () => {
-  const user = process.env.DATABASE_USERNAME;
-  const password = process.env.DATABASE_PASSWORD;
-  const host = process.env.DATABASE_HOST;
-  const port = process.env.DATABASE_PORT;
-  const name = process.env.DATABASE_NAME;
+  const username = process.env.DATASOURCE_USERNAME;
+  const password = process.env.DATASOURCE_PASSWORD;
+  const host = process.env.DATASOURCE_HOST;
+  const port = Number(process.env.DATASOURCE_PORT);
+  const database = process.env.DATASOURCE_DATABASE;
 
-  const url = `postgres://${user}:${password}@${host}:${port}/${name}`;
-
-  const config = {
+  const config: TypeOrmModuleOptions = {
     type: 'postgres',
-    url,
+    host,
+    port,
+    username,
+    password,
+    database,
     autoLoadEntities: true,
-  } as const satisfies TypeOrmModuleOptions;
+    synchronize: true, // only for dev, remove in production
+  };
+
   return config;
 });

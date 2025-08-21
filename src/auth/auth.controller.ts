@@ -1,4 +1,5 @@
-import { Controller, Post, UseGuards } from '@nestjs/common';
+import { Controller, Post, Res, UseGuards } from '@nestjs/common';
+import { Response } from 'express';
 import { AuthService } from './auth.service';
 import { User } from './guards/local-auth/decorators/user.decorator';
 import { LocalAuthGuard } from './guards/local-auth/local-auth.guard';
@@ -10,7 +11,15 @@ export class AuthController {
 
   @UseGuards(LocalAuthGuard)
   @Post('login')
-  login(@User() user: RequestUser) {
-    return user;
+  login(
+    @User() user: RequestUser,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    const token = this.authService.login(user);
+    response.cookie('token', token, {
+      secure: true,
+      httpOnly: true,
+      sameSite: true,
+    });
   }
 }
