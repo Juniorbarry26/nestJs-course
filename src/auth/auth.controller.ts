@@ -1,5 +1,5 @@
 import { Controller, Post, Res, UseGuards } from '@nestjs/common';
-import { ApiBody, ApiOkResponse } from '@nestjs/swagger';
+import { ApiBody, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
 import { Response } from 'express';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
@@ -17,6 +17,7 @@ export class AuthController {
       'Set-Cookie': { description: 'JWT cookie', schema: { type: 'string' } },
     },
   })
+  @ApiOperation({ summary: 'A valid user login' })
   @UseGuards(LocalAuthGuard)
   @Post('login')
   login(
