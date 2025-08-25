@@ -3,6 +3,7 @@ import { ConfigModule, ConfigType } from '@nestjs/config';
 import { APP_FILTER } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import databaseConfig from './config/database.config';
+import { DatabaseFilterFilter } from './exception-filters/database-filter/database-filter.filter';
 import { NotFoundExceptionFilter } from './exception-filters/not-found-exception/not-found-exception.filter';
 import { SeedingModule } from './seeding/seeding.module';
 
@@ -11,6 +12,10 @@ import { SeedingModule } from './seeding/seeding.module';
     {
       provide: APP_FILTER,
       useClass: NotFoundExceptionFilter,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: DatabaseFilterFilter,
     },
   ],
   imports: [
