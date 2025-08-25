@@ -15,7 +15,7 @@ export class CreateProductDto {
 
   @IsOptional()
   @Length(1, 500)
-  readonly description: string;
+  readonly description?: string;
 
   @IsNumber({ maxDecimalPlaces: 2 })
   @IsPositive()

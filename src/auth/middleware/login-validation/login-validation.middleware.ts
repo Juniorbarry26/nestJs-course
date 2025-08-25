@@ -2,15 +2,16 @@ import {
   BadRequestException,
   Injectable,
   NestMiddleware,
-  Type,
 } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 import { NextFunction, Request, Response } from 'express';
 
-export const ValidationMiddleware = <TDto extends Type>(DtoClass: TDto) => {
+export const ValidationMiddleware = <TDto extends new (...args: any[]) => any>(
+  DtoClass: TDto,
+) => {
   @Injectable()
-  class ValidationMiddleware implements NestMiddleware {
+  class M implements NestMiddleware {
     async use(req: Request, res: Response, next: NextFunction) {
       const dto = plainToInstance(DtoClass, req.body);
       const errors = await validate(dto, {
@@ -19,8 +20,8 @@ export const ValidationMiddleware = <TDto extends Type>(DtoClass: TDto) => {
       });
 
       if (errors.length) {
-        const errorMessage = errors.flatMap((error) =>
-          Object.values(error.constraints),
+        const errorMessage = errors.flatMap(
+          (error) => Object.values(error.constraints ?? {}), // ✅ fix: safe fallback
         );
         throw new BadRequestException(errorMessage);
       }
@@ -28,5 +29,6 @@ export const ValidationMiddleware = <TDto extends Type>(DtoClass: TDto) => {
       next();
     }
   }
-}
 
+  return M; // ✅ fix: return the class
+};
