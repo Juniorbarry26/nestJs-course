@@ -18,111 +18,100 @@ export class SeedingService {
     await queryRunner.startTransaction();
 
     try {
-      const userRepository = queryRunner.manager.getRepository(User);
-      const categoryRepository = queryRunner.manager.getRepository(Category);
-      const productRepository = queryRunner.manager.getRepository(Product);
-      const orderRepository = queryRunner.manager.getRepository(Order);
-      const orderItemRepository = queryRunner.manager.getRepository(OrderItem);
-      const paymentRepository = queryRunner.manager.getRepository(Payment);
+      const userRepo = queryRunner.manager.getRepository(User);
+      const categoryRepo = queryRunner.manager.getRepository(Category);
+      const productRepo = queryRunner.manager.getRepository(Product);
+      const orderRepo = queryRunner.manager.getRepository(Order);
+      const orderItemRepo = queryRunner.manager.getRepository(OrderItem);
+      const paymentRepo = queryRunner.manager.getRepository(Payment);
 
-      // 🧹 Clear old data
-      await paymentRepository.clear();
-      await orderItemRepository.clear();
-      await orderRepository.clear();
-      await productRepository.clear();
-      await categoryRepository.clear();
-      await userRepository.clear();
+      // 🧹 Clear old data safely
+      await queryRunner.query(`TRUNCATE TABLE "payment" CASCADE`);
+      await queryRunner.query(`TRUNCATE TABLE "order_item" CASCADE`);
+      await queryRunner.query(`TRUNCATE TABLE "order" CASCADE`);
+      await queryRunner.query(`TRUNCATE TABLE "product" CASCADE`);
+      await queryRunner.query(`TRUNCATE TABLE "category" CASCADE`);
+      await queryRunner.query(`TRUNCATE TABLE "user" CASCADE`);
 
       // 📂 Categories
-      const categories = await categoryRepository.save([
-        categoryRepository.create({ name: 'Electronics' }),
-        categoryRepository.create({ name: 'Books' }),
-        categoryRepository.create({ name: 'Fashion' }),
-        categoryRepository.create({ name: 'Groceries' }),
-        categoryRepository.create({ name: 'Home & Kitchen' }),
-        categoryRepository.create({ name: 'Sports' }),
+      const categories = await categoryRepo.save([
+        categoryRepo.create({ name: 'Electronics' }),
+        categoryRepo.create({ name: 'Books' }),
+        categoryRepo.create({ name: 'Fashion' }),
+        categoryRepo.create({ name: 'Groceries' }),
+        categoryRepo.create({ name: 'Home & Kitchen' }),
+        categoryRepo.create({ name: 'Sports' }),
       ]);
 
-      // 📦 Products (2 per category)
-      const products = await productRepository.save([
-        // Electronics
-        productRepository.create({
+      //  Products (2 per category)
+      const products = await productRepo.save([
+        productRepo.create({
           name: 'Smartphone X',
           description: 'Latest gen smartphone',
           price: 899.99,
           categories: [categories[0]],
         }),
-        productRepository.create({
+        productRepo.create({
           name: 'Laptop Pro 15"',
           description: 'Powerful laptop for work',
           price: 1499.0,
           categories: [categories[0]],
         }),
-
-        // Books
-        productRepository.create({
+        productRepo.create({
           name: 'Book of Cain',
           description: 'Ancient writings of a scholar',
           price: 25.5,
           categories: [categories[1]],
         }),
-        productRepository.create({
+        productRepo.create({
           name: 'NestJS in Action',
           description: 'Practical guide for backend devs',
           price: 40.0,
           categories: [categories[1]],
         }),
-
-        // Fashion
-        productRepository.create({
+        productRepo.create({
           name: 'Classic T-Shirt',
           description: '100% cotton, unisex',
           price: 15.99,
           categories: [categories[2]],
         }),
-        productRepository.create({
+        productRepo.create({
           name: 'Sneakers Runner',
           description: 'Comfortable running shoes',
           price: 55.0,
           categories: [categories[2]],
         }),
-
-        // Groceries
-        productRepository.create({
+        productRepo.create({
           name: 'Organic Apples',
           description: 'Freshly picked apples',
           price: 5.99,
           categories: [categories[3]],
         }),
-        productRepository.create({
+        productRepo.create({
           name: 'Milk 1L',
           description: 'Fresh cow milk',
           price: 2.5,
           categories: [categories[3]],
         }),
-
-        // Home & Kitchen
-        productRepository.create({
+        productRepo.create({
           name: 'Blender 3000',
           description: 'High-speed kitchen blender',
           price: 70.0,
           categories: [categories[4]],
         }),
-        productRepository.create({
+        productRepo.create({
           name: 'Non-stick Pan',
           description: 'Durable cooking pan',
           price: 25.0,
           categories: [categories[4]],
         }),
-
-        // Sports
-        productRepository.create({
+        productRepo.create({
           name: 'Football',
           description: 'Standard size 5 ball',
           price: 18.0,
           categories: [categories[5]],
         }),
-        productRepository.create({
+        productRepo.create({
           name: 'Yoga Mat',
           description: 'Comfortable and durable',
           price: 22.0,
@@ -130,33 +119,33 @@ export class SeedingService {
         }),
       ]);
 
-      // 👤 Users
-      const users = await userRepository.save([
-        userRepository.create({
+      //  Users
+      const users = await userRepo.save([
+        userRepo.create({
           name: 'Admin User',
           email: 'admin@example.com',
           phone: '200000001',
           password: 'Admin@123',
         }),
-        userRepository.create({
+        userRepo.create({
           name: 'Alsainey Barry',
           email: 'alsainey@gmail.com',
           phone: '300000001',
           password: 'Avond778@',
         }),
-        userRepository.create({
+        userRepo.create({
           name: 'Jane Doe',
           email: 'jane@example.com',
           phone: '300000002',
           password: 'Password123',
         }),
-        userRepository.create({
+        userRepo.create({
           name: 'John Smith',
           email: 'john@example.com',
           phone: '300000003',
           password: 'Secret123',
         }),
-        userRepository.create({
+        userRepo.create({
           name: 'Fatou Jallow',
           email: 'fatou@example.com',
           phone: '300000004',
@@ -164,37 +153,32 @@ export class SeedingService {
         }),
       ]);
 
-      // 🛒 Orders (each user gets 1 order with random items)
-      const orders: Order[] = [];
+      //  Orders (each user gets 1 order with random items)
       for (let i = 1; i < users.length; i++) {
-        // skip admin
         const orderItems = [
-          orderItemRepository.create({
+          orderItemRepo.create({
             product: products[Math.floor(Math.random() * products.length)],
             quantity: 1 + Math.floor(Math.random() * 3),
             price: products[0].price,
           }),
-          orderItemRepository.create({
+          orderItemRepo.create({
             product: products[Math.floor(Math.random() * products.length)],
             quantity: 1 + Math.floor(Math.random() * 2),
             price: products[1].price,
           }),
         ];
 
-        await orderItemRepository.save(orderItems);
-
-        const order = orderRepository.create({
+        const order = orderRepo.create({
           customer: users[i],
-          items: orderItems,
+          items: orderItems, // attach items BEFORE saving
           status: OrderStatus.AWAITING_PAYMENT,
         });
 
-        await orderRepository.save(order);
-        orders.push(order);
+        await orderRepo.save(order); // cascade saves the items automatically
       }
 
       await queryRunner.commitTransaction();
-      console.log('✅ Database seeded with multiple items!');
+      console.log('✅ Database seeded successfully!');
     } catch (error) {
       await queryRunner.rollbackTransaction();
       console.error('❌ Seeding failed:', error);
