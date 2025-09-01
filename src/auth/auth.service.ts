@@ -60,4 +60,8 @@ export class AuthService {
     const payload: JwtPayload = { sub: user.id };
     return this.jwtService.sign(payload);
   }
+
+   getProfile(id: number) {
+    return this.userRespository.findOneBy({id});
+  }
 }
