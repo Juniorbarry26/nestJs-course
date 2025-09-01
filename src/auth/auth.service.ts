@@ -9,6 +9,9 @@ import { RequestUser } from './interface/request-user.interface';
 
 @Injectable()
 export class AuthService {
+  getProfile(id: number) {
+    throw new Error('Method not implemented.');
+  }
   constructor(
     @InjectRepository(User)
     private readonly userRespository: Repository<User>,

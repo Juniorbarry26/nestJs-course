@@ -1,13 +1,13 @@
-
-import { Controller, Post, Res, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
 import { ApiBody, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
 import { Response } from 'express';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
+import { JwtAuthGuard } from './guards/jwt-auth/jwt-auth.guard';
 import { User } from './guards/local-auth/decorators/user.decorator';
 import { LocalAuthGuard } from './guards/local-auth/local-auth.guard';
 import { RequestUser } from './interface/request-user.interface';
-import { JwtAuthGuard } from './guards/jwt-auth/jwt-auth.guard';
+
 
 @Controller('auth')
 export class AuthController {
@@ -35,7 +35,9 @@ export class AuthController {
   }
   @UseGuards(JwtAuthGuard)
   @Get('profile')
-  getProfile(@User() {id}: RequestUser) {
+  @ApiOperation({ summary: 'Get user profile' })
+  @ApiOkResponse({ description: 'User profile retrieved successfully' })
+  getProfile(@User() { id }: RequestUser) {
     return this.authService.getProfile(id);
   }
 }
