@@ -4,18 +4,15 @@ import {
   DeleteDateColumn,
   Entity,
   ManyToOne,
-  PrimaryColumn,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Product } from '../../products/entities/product.entity';
 import { Order } from './order.entity';
 
 @Entity()
 export class OrderItem {
-  @PrimaryColumn()
-  orderId: number;
-
-  @PrimaryColumn()
-  productId: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: number;
 
   @ManyToOne(() => Order, (order) => order.items, { onDelete: 'CASCADE' })
   order: Order;

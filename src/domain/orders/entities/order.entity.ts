@@ -12,9 +12,9 @@ import { User } from '../../users/entities/user.entity';
 import { OrderStatus } from '../enums/order-status.enums';
 import { OrderItem } from './order-item.entity';
 
-@Entity('orders')
+@Entity('order')
 export class Order {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('uuid')
   id: number;
 
   @Column({
@@ -27,7 +27,7 @@ export class Order {
   @Column(() => RegistryDate, { prefix: false })
   registrationDates: RegistryDate;
 
-  @ManyToOne(() => User, (customer) => customer.orders, { nullable: false })
+  @ManyToOne(() => User, (customer) => customer.orders, { nullable: true })
   customer: User;
 
   @ManyToOne(() => Payment, (payment) => payment.order, { cascade: true })

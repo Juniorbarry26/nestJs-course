@@ -1,7 +1,7 @@
 import {
   Column,
   Entity,
-  JoinColumn,
+  JoinTable,
   ManyToMany,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -28,7 +28,7 @@ export class Product {
   registrationDates: RegistryDate;
 
   @ManyToMany(() => Category, (Category) => Category.products)
-  @JoinColumn({ name: 'product_to_category' })
+  @JoinTable()
   categories: Category[];
 
   @OneToMany(() => OrderItem, (item) => item.product)

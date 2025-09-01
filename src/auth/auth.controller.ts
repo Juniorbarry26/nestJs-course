@@ -1,6 +1,9 @@
-import { Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
+
+import { Controller, Post, Res, UseGuards } from '@nestjs/common';
+import { ApiBody, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
 import { Response } from 'express';
 import { AuthService } from './auth.service';
+import { LoginDto } from './dto/login.dto';
 import { User } from './guards/local-auth/decorators/user.decorator';
 import { LocalAuthGuard } from './guards/local-auth/local-auth.guard';
 import { RequestUser } from './interface/request-user.interface';
@@ -10,6 +13,13 @@ import { JwtAuthGuard } from './guards/jwt-auth/jwt-auth.guard';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @ApiBody({ type: LoginDto })
+  @ApiOkResponse({
+    headers: {
+      'Set-Cookie': { description: 'JWT cookie', schema: { type: 'string' } },
+    },
+  })
+  @ApiOperation({ summary: 'A valid user login' })
   @UseGuards(LocalAuthGuard)
   @Post('login')
   login(

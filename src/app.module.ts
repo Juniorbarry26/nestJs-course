@@ -8,6 +8,7 @@ import { PaymentsModule } from './domain/payments/payments.module';
 import { ProductsModule } from './domain/products/products.module';
 import { UsersModule } from './domain/users/users.module';
 import { EnvModule } from './env/env.module';
+// import { DocsModule } from './docs/docs.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { EnvModule } from './env/env.module';
     CategoriesModule,
     ProductsModule,
     AuthModule,
+    // DocsModule,
   ],
 })
 export class AppModule {}
