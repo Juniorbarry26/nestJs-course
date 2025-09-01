@@ -1,8 +1,8 @@
-import { IsCardinal } from '../decorator/validators/is-cardinal.decorator';
+import { IsUUID } from 'class-validator';
 /**
  *
  */
 export class IdDto {
-  @IsCardinal({})
+  @IsUUID()
   readonly id: number;
 }
