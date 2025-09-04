@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { PaginationDto } from '../../querying/dto/pagination.dto';
+import { PaginationService } from '../../querying/pagination.service';
 import { DEFAULT_PAGE_SIZE } from '../../querying/util/querying.constant';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
@@ -12,6 +13,7 @@ export class ProductsService {
   constructor(
     @InjectRepository(Product)
     private readonly productRepository: Repository<Product>,
+    private readonly paginationService: PaginationService,
   ) {}
 
   create(createProductDto: CreateProductDto) {
@@ -20,14 +22,20 @@ export class ProductsService {
   }
 
   async findAll(paginationDto: PaginationDto) {
-    const { limit, page } = paginationDto;
+    const { page = 1 } = paginationDto;
+    const limit = paginationDto.limit || DEFAULT_PAGE_SIZE.PRODUCTS;
+
+    const offset = this.paginationService.calculateOffset(limit, page);
+
+    // Fetch products with pagination and relations
     const [data, count] = await this.productRepository.findAndCount({
       skip: page,
-      take: limit ?? DEFAULT_PAGE_SIZE.PRODUCTS,
-      relations: { categories: true },
+      take: limit,
     });
 
-    return { data, count };
+    const meta = this.paginationService.createMeta(limit, page, count);
+
+    return { data, meta };
   }
 
   async findOne(id: number) {
