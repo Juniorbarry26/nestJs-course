@@ -24,9 +24,9 @@ export class CategoriesService {
   }
 
   findAll(paginationDto: PaginationDto) {
-    const { limit, offset } = paginationDto;
+    const { limit, page } = paginationDto;
     return this.categoryRepository.find({
-      skip: offset,
+      skip: page,
       take: limit ?? DEFAULT_PAGE_SIZE.CATEGORIES,
     });
   }

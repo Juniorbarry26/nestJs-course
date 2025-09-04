@@ -32,9 +32,9 @@ export class UsersService {
   }
 
   findAll(paginationDto: PaginationDto) {
-    const { limit, offset } = paginationDto;
+    const { limit, page } = paginationDto;
     return this.userRepository.find({
-      skip: offset,
+      skip: page,
       take: limit ?? DEFAULT_PAGE_SIZE.USERS,
     });
   }
