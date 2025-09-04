@@ -9,6 +9,7 @@ import { ProductsModule } from './domain/products/products.module';
 import { UsersModule } from './domain/users/users.module';
 import { EnvModule } from './env/env.module';
 // import { DocsModule } from './docs/docs.module';
+import { QueryingModule } from './querying/querying.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { EnvModule } from './env/env.module';
     CategoriesModule,
     ProductsModule,
     AuthModule,
+    QueryingModule,
     // DocsModule,
   ],
 })

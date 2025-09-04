@@ -16,7 +16,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { IdDto } from '../../common/dtos/id.dto';
-import { PaginationDto } from '../../common/dtos/pagination.dto';
+import { PaginationDto } from '../../querying/dto/pagination.dto';
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';

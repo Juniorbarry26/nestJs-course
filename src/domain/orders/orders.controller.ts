@@ -15,7 +15,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { IdDto } from '../../common/dtos/id.dto';
-import { PaginationDto } from '../../common/dtos/pagination.dto';
+import { PaginationDto } from '../../querying/dto/pagination.dto';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { Order } from './entities/order.entity'; // Assuming you have an Order entity
 import { OrdersService } from './orders.service';

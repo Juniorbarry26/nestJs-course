@@ -6,8 +6,10 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { genSalt, hash } from 'bcrypt';
 import { Repository } from 'typeorm';
-import { PaginationDto } from '../../common/dtos/pagination.dto';
-import { DEFAULT_PAGE_SIZE } from '../../common/util/common.constants';
+
+import { HashingService } from '../../auth/hashing/hashing.service';
+import { PaginationDto } from '../../querying/dto/pagination.dto';
+import { DEFAULT_PAGE_SIZE } from '../../querying/util/querying.constant';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
@@ -31,9 +33,9 @@ export class UsersService {
   }
 
   findAll(paginationDto: PaginationDto) {
-    const { limit, offset } = paginationDto;
+    const { limit, page } = paginationDto;
     return this.userRepository.find({
-      skip: offset,
+      skip: page,
       take: limit ?? DEFAULT_PAGE_SIZE.USERS,
     });
   }

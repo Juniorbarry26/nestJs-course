@@ -17,7 +17,7 @@ import {
 } from '@nestjs/swagger';
 import { RemoveDto } from '../../common/dtos/embedded/remove.dto';
 import { IdDto } from '../../common/dtos/id.dto';
-import { PaginationDto } from '../../common/dtos/pagination.dto';
+import { PaginationDto } from '../../querying/dto/pagination.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
