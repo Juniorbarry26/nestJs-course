@@ -6,6 +6,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { genSalt, hash } from 'bcrypt';
 import { Repository } from 'typeorm';
+
 import { HashingService } from '../../auth/hashing/hashing.service';
 import { PaginationDto } from '../../querying/dto/pagination.dto';
 import { DEFAULT_PAGE_SIZE } from '../../querying/util/querying.constant';
@@ -18,8 +19,8 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-    private readonly HashingService: HashingService,
   ) {}
+
   async create(createUserDto: CreateUserDto) {
     const { password } = createUserDto;
     const hashPassword = await this.hashPassword(password);

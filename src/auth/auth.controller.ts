@@ -1,6 +1,5 @@
-import { Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { ApiBody, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
-import { Response } from 'express';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { JwtAuthGuard } from './guards/jwt-auth/jwt-auth.guard';
@@ -22,15 +21,17 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @Post('login')
   login(
-    @User() user: RequestUser,
-    @Res({ passthrough: true }) response: Response,
+    // @User() user: RequestUser,
+    // @Res({ passthrough: true }) response: Response,
+    @Body() loginDto: LoginDto,
   ) {
-    const token = this.authService.login(user);
-    response.cookie('token', token, {
-      secure: true,
-      httpOnly: true,
-      sameSite: true,
-    });
+    return this.authService.login(loginDto);
+    // const token = this.authService.login();
+    // // response.cookie('token', token, {
+    //   secure: true,
+    //   httpOnly: true,
+    //   sameSite: true,
+    // });
   }
   @UseGuards(JwtAuthGuard)
   @Get('profile')
