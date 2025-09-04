@@ -1,5 +1,5 @@
 import { IsOptional } from 'class-validator';
-import { IsCardinal } from '../decorator/validators/is-cardinal.decorator';
+import { IsCardinal } from '../../common/decorator/validators/is-cardinal.decorator';
 
 export class PaginationDto {
   @IsOptional()
