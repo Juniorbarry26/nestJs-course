@@ -44,6 +44,7 @@ export class SeedingService {
 
       //  Products (2 per category)
       const products = await productRepo.save([
+        // Existing products...
         productRepo.create({
           name: 'Smartphone X',
           description: 'Latest gen smartphone',
@@ -114,6 +115,62 @@ export class SeedingService {
           name: 'Yoga Mat',
           description: 'Comfortable and durable',
           price: 22.0,
+          categories: [categories[5]],
+        }),
+
+        // New additions...
+        productRepo.create({
+          name: 'Wireless Earbuds Pro',
+          description: 'Noise-cancelling earbuds with 24-hour battery life',
+          price: 199.99,
+          categories: [categories[0]],
+        }),
+        productRepo.create({
+          name: 'Mastering NestJS',
+          description: 'Comprehensive guide for building scalable backend apps',
+          price: 39.99,
+          categories: [categories[1]],
+        }),
+        productRepo.create({
+          name: 'The Pragmatic Programmer',
+          description: 'Classic book on software craftsmanship and mindset',
+          price: 29.5,
+          categories: [categories[1]],
+        }),
+        productRepo.create({
+          name: 'Slim Fit Denim Jeans',
+          description: 'Stylish and comfortable jeans for everyday wear',
+          price: 49.99,
+          categories: [categories[2]],
+        }),
+        productRepo.create({
+          name: 'Leather Wristwatch',
+          description: 'Elegant analog watch with genuine leather strap',
+          price: 120.0,
+          categories: [categories[2]],
+        }),
+        productRepo.create({
+          name: 'Organic Bananas',
+          description: 'Fresh bananas grown without pesticides',
+          price: 3.99,
+          categories: [categories[3]],
+        }),
+        productRepo.create({
+          name: 'Brown Rice 1kg',
+          description: 'Whole grain rice packed with nutrients',
+          price: 4.5,
+          categories: [categories[3]],
+        }),
+        productRepo.create({
+          name: 'Electric Kettle',
+          description: '1.7L stainless steel kettle with auto shut-off',
+          price: 35.0,
+          categories: [categories[4]],
+        }),
+        productRepo.create({
+          name: 'Resistance Bands Set',
+          description: 'Multi-level bands for strength training and mobility',
+          price: 25.0,
           categories: [categories[5]],
         }),
       ]);

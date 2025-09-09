@@ -12,6 +12,8 @@ async function bootstrap() {
   const config = new DocumentBuilder()
     .setTitle('The Conrod shop')
     .setDescription('Documentation for the shop API')
+    .addBearerAuth()
+    .addSecurityRequirements('bearer')
     .setVersion('1.0')
     .build();
   const documentFcatory = SwaggerModule.createDocument(app, config);

@@ -7,8 +7,9 @@ import { UserStatus } from '../enums/user-status.enum';
 
 @Entity()
 export class User {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('uuid')
   id: number;
+  @Column({ nullable: false })
   name: string;
   @Column({ unique: true })
   email: string;
