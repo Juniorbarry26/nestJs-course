@@ -29,6 +29,13 @@ export class UsersService {
     });
     return this.userRepository.save(user);
   }
+  async findByEmail(email: string): Promise<User | null> {
+    return this.userRepository.findOne({ where: { email } });
+  }
+
+  async findByUsername(name: string): Promise<User | null> {
+    return this.userRepository.findOne({ where: { name } });
+  }
 
   findAll(paginationDto: PaginationDto) {
     const { limit, offset } = paginationDto;

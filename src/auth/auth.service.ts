@@ -12,6 +12,7 @@ import { LoginDto } from './dto/login.dto';
 import { HashingService } from './hashing/hashing.service';
 import { JwtPayload } from './interface/jwt-payload.interface';
 import { RequestUser } from './interface/request-user.interface';
+import { RegisterDto } from './dto/register.dto';
 
 @Injectable()
 export class AuthService {
@@ -31,7 +32,11 @@ export class AuthService {
         email: true,
         phone: true,
         name: true,
-        password: true, // ✅ include password for validation
+        password: true,
+        first_name: true,
+        last_name: true,
+        role: true,
+        status: true, // ✅ include password for validation
       },
     });
 
@@ -61,39 +66,52 @@ export class AuthService {
   }
 
   async login(loginDto: LoginDto) {
-    const { email, password } = loginDto;
+    let user;
 
-    if (!email || !password) {
-      throw new BadRequestException('Email and password are required');
+    // Email/Username + password login
+    if ((loginDto.email || loginDto.name) && loginDto.password) {
+      if (loginDto.email) {
+        user = await this.usersService.findByEmail(loginDto.email);
+      }
+
+      if (loginDto.name) {
+        user = await this.usersService.findByUsername(loginDto.name);
+      }
+
+      if (!user) {
+        throw new BadRequestException('Email or Username not found');
+      }
+
+      // validateLocal must return full User entity or DTO
+      user = await this.validateLocal(user.email, loginDto.password);
+
+      // generate JWT
+      const payload: JwtPayload = {
+        sub: user.id,
+      };
+      const access_token = this.jwtService.sign(payload);
+
+      // strip sensitive fields
+      const { password: pwd, ...safeUser } = user;
+
+      return {
+        accessToken: access_token,
+        access_token,
+        expiresIn: 3600,
+        expires_in: 3600,
+        token_type: 'Bearer',
+        user: {
+          id: user.id,
+          name: user.name,
+          firstName: user.first_name,
+          lastName: user.last_name,
+          phone: user.phone,
+          role: user.role,
+          status: user.status,
+        },
+      };
     }
-
-    // validateLocal must return full User entity or DTO
-    const user = await this.validateLocal(email, password);
-
-    // generate JWT
-    const payload: JwtPayload = { sub: user.id };
-    const access_token = this.jwtService.sign(payload);
-
-    // strip sensitive fields
-    const { password: pwd, ...safeUser } = user;
-
-    return {
-      accessToken: access_token,
-      access_token,
-      expires_in: 3600,
-      expiresIn: 3600,
-      token_type: 'Bearer',
-      //user: safeUser, // ✅ now contains user details
-      user: {
-        id: user.id,
-        email: user.email,
-        name: user.name,
-        phone: user.phone,
-      },
-    };
   }
 
-  getProfile(id: number) {
-    return this.userRespository.findOneBy({ id });
-  }
+  
 }
