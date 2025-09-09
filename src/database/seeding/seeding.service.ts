@@ -4,9 +4,9 @@ import { Category } from '../../domain/categories/entities/category.entity';
 import { OrderItem } from '../../domain/orders/entities/order-item.entity';
 import { Order } from '../../domain/orders/entities/order.entity';
 import { OrderStatus } from '../../domain/orders/enums/order-status.enums';
-import { Payment } from '../../domain/payments/entities/payment.entity';
 import { Product } from '../../domain/products/entities/product.entity';
 import { User } from '../../domain/users/entities/user.entity';
+import { UserRole } from '../../domain/users/enums/user-role.enum';
 
 @Injectable()
 export class SeedingService {
@@ -23,7 +23,6 @@ export class SeedingService {
       const productRepo = queryRunner.manager.getRepository(Product);
       const orderRepo = queryRunner.manager.getRepository(Order);
       const orderItemRepo = queryRunner.manager.getRepository(OrderItem);
-      const paymentRepo = queryRunner.manager.getRepository(Payment);
 
       // 🧹 Clear old data safely
       await queryRunner.query(`TRUNCATE TABLE "payment" CASCADE`);
@@ -179,49 +178,73 @@ export class SeedingService {
       //  Users
       const users = await userRepo.save([
         userRepo.create({
-          name: 'Admin User',
+          role: UserRole.ADMIN,
+          name: 'Admin',
+          first_name: 'System',
+          last_name: 'Administrator',
           email: 'admin@example.com',
           phone: '200000001',
           password: 'Admin@123',
         }),
         userRepo.create({
-          name: 'Alsainey Barry',
+          role: UserRole.USER,
+          name: 'alsainey4',
+          first_name: 'Alsainey',
+          last_name: 'Barry',
           email: 'alsainey@gmail.com',
           phone: '300000001',
           password: 'Avond778@',
         }),
         userRepo.create({
-          name: 'Jane Doe',
+          role: UserRole.USER,
+          name: 'Jane',
+          first_name: 'Jane',
+          last_name: 'Doe',
           email: 'jane@example.com',
           phone: '300000002',
           password: 'Password123',
         }),
         userRepo.create({
-          name: 'John Smith',
+          role: UserRole.USER,
+          name: 'John',
+          first_name: 'John',
+          last_name: 'Smith',
           email: 'john@example.com',
           phone: '300000003',
           password: 'Secret123',
         }),
         userRepo.create({
-          name: 'Fatou Jallow',
+          role: UserRole.USER,
+          name: 'Fatou',
+          first_name: 'Fatou',
+          last_name: 'Jallow',
           email: 'fatou@example.com',
           phone: '300000004',
           password: 'FatouPass',
         }),
         userRepo.create({
+          role: UserRole.USER,
           name: 'Mohamed Sillah',
+          first_name: 'Mohamed',
+          last_name: 'Sillah',
           email: 'muha@gmail.com',
           phone: '300000005',
           password: 'Mohamed123',
         }),
         userRepo.create({
-          name: 'Aisha Ceesay',
+          role: UserRole.USER,
+          name: 'Aisha',
+          first_name: 'Aisha',
+          last_name: 'Jobe',
           email: 'taisha@gmail.com',
           phone: '300000006',
           password: 'Aisha123',
         }),
         userRepo.create({
-          name: 'Kebba Jobe',
+          role: UserRole.USER,
+          name: 'Kebba',
+          first_name: 'Kebba',
+          last_name: 'Sanyang',
           email: 'kebs@gmail.com',
           phone: '300000007',
           password: 'Kebba123',

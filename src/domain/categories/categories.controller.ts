@@ -7,6 +7,7 @@ import {
   Patch,
   Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiOperation,
@@ -20,7 +21,7 @@ import { PaginationDto } from '../../querying/dto/pagination.dto';
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
-import { Category } from './entities/category.entity'; // Assuming you have a Category entity
+import { Category } from './entities/category.entity';
 
 @ApiTags('Categories')
 @Controller('categories')
