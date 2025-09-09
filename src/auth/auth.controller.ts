@@ -1,11 +1,8 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { ApiBody, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
-import { JwtAuthGuard } from './guards/jwt-auth/jwt-auth.guard';
-import { User } from './guards/local-auth/decorators/user.decorator';
-import { LocalAuthGuard } from './guards/local-auth/local-auth.guard';
-import { RequestUser } from './interface/request-user.interface';
+import { RegisterDto } from './dto/register.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -18,26 +15,11 @@ export class AuthController {
     },
   })
   @ApiOperation({ summary: 'A valid user login' })
-  @UseGuards(LocalAuthGuard)
+  @ApiBody({ type: LoginDto })
   @Post('login')
-  login(
-    // @User() user: RequestUser,
-    // @Res({ passthrough: true }) response: Response,
-    @Body() loginDto: LoginDto,
-  ) {
+  login(@Body() loginDto: LoginDto) {
     return this.authService.login(loginDto);
-    // const token = this.authService.login();
-    // // response.cookie('token', token, {
-    //   secure: true,
-    //   httpOnly: true,
-    //   sameSite: true,
-    // });
   }
-  @UseGuards(JwtAuthGuard)
-  @Get('profile')
-  @ApiOperation({ summary: 'Get user profile' })
-  @ApiOkResponse({ description: 'User profile retrieved successfully' })
-  getProfile(@User() { id }: RequestUser) {
-    return this.authService.getProfile(id);
-  }
+
+  
 }
