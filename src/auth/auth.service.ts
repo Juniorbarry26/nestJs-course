@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
@@ -8,11 +9,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../domain/users/entities/user.entity';
 import { UsersService } from '../domain/users/users.service';
+import { ChangePasswordDto } from './dto/change-password.dto';
 import { LoginDto } from './dto/login.dto';
 import { HashingService } from './hashing/hashing.service';
 import { JwtPayload } from './interface/jwt-payload.interface';
 import { RequestUser } from './interface/request-user.interface';
-import { RegisterDto } from './dto/register.dto';
 
 @Injectable()
 export class AuthService {
@@ -113,5 +114,47 @@ export class AuthService {
     }
   }
 
-  
+  async changePassword(id: number, dto: ChangePasswordDto) {
+    const { oldPassword, newPassword, confirmPassword } = dto;
+
+    if (newPassword !== confirmPassword) {
+      throw new BadRequestException(
+        'New password and confirm password do not match',
+      );
+    }
+
+    const user = await this.userRespository.findOneBy({ id });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+
+    const isMatch = await this.hashingService.compare(
+      oldPassword,
+      user.password,
+    );
+    if (!isMatch) {
+      throw new UnauthorizedException('Old password is incorrect');
+    }
+
+    const isSameAsOld = await this.hashingService.compare(
+      newPassword,
+      user.password,
+    );
+    if (isSameAsOld) {
+      throw new BadRequestException(
+        'New password must be different from the old password',
+      );
+    }
+
+    const hashedNewPassword = await this.hashingService.hash(newPassword);
+    user.password = hashedNewPassword;
+
+    await this.userRespository.save(user);
+
+    return {
+      status: 'success',
+      message: 'Password changed successfully',
+    };
+  }
 }
