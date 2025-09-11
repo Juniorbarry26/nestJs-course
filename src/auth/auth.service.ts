@@ -128,9 +128,6 @@ export class AuthService {
       throw new NotFoundException('User not found');
     }
 
-    console.log('=========== USER PASSWORD ===========');
-    console.log(user.email);
-    console.log('=====================================');
 
     const isMatch = await this.hashingService.compare(
       oldPassword,
