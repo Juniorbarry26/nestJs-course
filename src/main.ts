@@ -10,7 +10,7 @@ async function bootstrap() {
   const port = configService.get<number>('APP_PORT') ?? 3000; // fallback to 3000
 
   const config = new DocumentBuilder()
-    .setTitle('The Conrod shop')
+    .setTitle('The Smart Store')
     .setDescription('Documentation for the shop API')
     .addBearerAuth()
     .addSecurityRequirements('bearer')
